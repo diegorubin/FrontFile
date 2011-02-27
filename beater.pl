@@ -4,8 +4,8 @@
 use Getopt::Long;
 
 sub read_file{
-     my($_file) = $_[0];
-     my(@_patterns) = split(/:::/,$_[1]);
+     local($_file) = $_[0];
+     local(@_patterns) = split(/:::/,$_[1]);
      open(TARGET,"<$_file");
 
      my($print_name) = 1;
@@ -17,14 +17,15 @@ sub read_file{
           foreach $pattern (@_patterns){
           	   if($line =~ m/$pattern/){
           	   		if($print_name){
-          	   			 print "in file $_file\n\n";
+          	   			 print "in file $_file\n";
                          $print_name = 0;
                     }
-                    print " $number: $line \n";
+                    print "$number: $line \n";
                }
           }
      }
 }
+
 
 $result = GetOptions("file=s" => \$file,"patterns=s" => \$patterns);
 read_file($file,$patterns);
