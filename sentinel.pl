@@ -5,9 +5,20 @@ use Getopt::Long;
 use Cwd;
 $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
-                     "extensions=s" => \$extensions);
+                     "extensions=s" => \$extensions,
+                     "v" => \$verbose);
 my(@files) = ();
 &read_directory($directory);
+
+my($number_files) = $#files+1;
+my($number_actual) = 0;
+foreach $file (@files){
+     if($verbose){
+     	  $number_actual++;
+          print "$number_actual/$number_files\r";
+     }
+     print `beater --file=$file --patterns=$patterns`;
+}
 
 exit;
 
@@ -24,7 +35,7 @@ sub read_directory {
                &read_directory($f);
           }
           else{
-               print `beater --file=$pwd/$f --patterns=$patterns`;
+          	   push(@files,"$pwd/$f");
           }
      }
      closedir(DIR);
