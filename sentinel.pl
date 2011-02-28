@@ -3,9 +3,12 @@
 
 use Getopt::Long;
 use Cwd;
-
-$result = GetOptions("directory=s" => \$directory,"patterns=s" => \$patterns);
+$result = GetOptions("directory=s" => \$directory,
+                     "patterns=s" => \$patterns,
+                     "extensions=s" => \$extensions);
+my(@files) = ();
 &read_directory($directory);
+
 exit;
 
 sub read_directory {
@@ -16,6 +19,7 @@ sub read_directory {
      opendir(DIR, ".");
      while ($f=readdir(DIR)) {
           next if ($f eq "." || $f eq "..");
+          next if ($extensions && (-f $f) && ($f !~ m/$extensions/));
           if (-d $f) {
                &read_directory($f);
           }
