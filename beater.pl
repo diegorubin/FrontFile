@@ -18,7 +18,11 @@ sub read_file{
           foreach $pattern (@_patterns){
           	   if($line =~ m/$pattern/){
           	   		if($print_name){
-          	   			 print "in file $_file\n";
+          	   			 if($color){
+          	   			      print colored("in file $_file\n",'green');
+                         }else{
+          	   			      print "in file $_file\n";
+                         }
                          $print_name = 0;
                     }
                     print "$number: ";
@@ -27,7 +31,7 @@ sub read_file{
                          my($last_position) = $#parts;
                          my($position) = 0;
                          foreach $exp (@parts){
-                         	  print $exp;
+                         	  print colored($exp,'white');
                          	  print colored($pattern,'red') unless $last_position == $position;
                          	  $position++;
                          }

@@ -6,7 +6,8 @@ use Cwd;
 $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
                      "extensions=s" => \$extensions,
-                     "v" => \$verbose);
+                     "v" => \$verbose,
+                     "c" => \$color);
 my(@files) = ();
 &read_directory($directory);
 
@@ -17,7 +18,7 @@ foreach $file (@files){
      	  $number_actual++;
           print "$number_actual/$number_files\r";
      }
-     print `beater --file=$file --patterns=$patterns`;
+     print `beater --file=$file --patterns=$patterns -c`;
 }
 
 exit;
