@@ -2,6 +2,7 @@
 #file:beater.pl
 
 use Getopt::Long;
+use Term::ANSIColor;
 
 sub read_file{
      local($_file) = $_[0];
@@ -20,13 +21,29 @@ sub read_file{
           	   			 print "in file $_file\n";
                          $print_name = 0;
                     }
-                    print "$number: $line \n";
+                    print "$number: ";
+                    if($color){
+                         my(@parts) = split(/$pattern/,$line);
+                         my($last_position) = $#parts;
+                         my($position) = 0;
+                         foreach $exp (@parts){
+                         	  print $exp;
+                         	  print colored($pattern,'red') unless $last_position == $position;
+                         	  $position++;
+                         }
+                         print "\n";
+                    }
+                    else{
+                    	 print $line."\n";
+                    }
                }
           }
      }
 }
 
 
-$result = GetOptions("file=s" => \$file,"patterns=s" => \$patterns);
+$result = GetOptions("file=s" => \$file,
+                     "patterns=s" => \$patterns,
+                     "c" => \$color);
 read_file($file,$patterns);
 
