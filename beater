@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 # file: beater.pl
 # Copyright (C) Diego Rubin 2011 <rubin.diego@gmail.com>
 # 
@@ -20,7 +21,6 @@
 # 	Boston, MA  02110-1301, USA.
 #
 
-#!/usr/bin/perl
 
 use Getopt::Long;
 use Term::ANSIColor;

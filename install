@@ -1,0 +1,8 @@
+# file: install
+#!/bin/bash
+
+echo "installing sentinel";
+install -t /usr/bin sentinel -v;
+
+echo "installing beater";
+install -t /usr/bin beater -v;
