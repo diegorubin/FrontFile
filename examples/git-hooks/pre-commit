@@ -10,7 +10,7 @@ my($patterns) = "debugger:::ruby-debug";
 my($extensions) = "'.haml|.rb|.rake|.erb'";
 
 my(@result) = `sentinel --patterns $patterns --directory $directory --extensions $extensions --exclude .git`;
-if ($#result){
+if ($#result+1){
 	 print "Hey, hey, hey, debugger command found\n";
 	 foreach $line (@result){
           print $line;
