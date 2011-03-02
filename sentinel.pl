@@ -6,6 +6,7 @@ use Cwd;
 $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
                      "extensions=s" => \$extensions,
+                     "exclude=s" => \$exclude,
                      "v" => \$verbose,
                      "c" => \$color);
 my(@files) = ();
@@ -32,6 +33,7 @@ sub read_directory {
      while ($f=readdir(DIR)) {
           next if ($f eq "." || $f eq "..");
           next if ($extensions && (-f $f) && ($f !~ m/$extensions/));
+          next if ($exclude && ($f =~ m/$exclude/));
           if (-d $f) {
                &read_directory($f);
           }
