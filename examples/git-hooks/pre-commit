@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-#file: abort_commit.pl
+#file: pre-commit
 
 use Cwd;
 

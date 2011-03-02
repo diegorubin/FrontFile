@@ -8,6 +8,7 @@ Currently there are two scripts:
 - beater: search patterns in file;
 - sentinel: search patterns in directory after call beater for each files; 
 
+
 2 - Beater
 ----------
     Options:
@@ -27,7 +28,16 @@ Currently there are two scripts:
     - exclude: don't open files with this pattern;
     - v: enable verbose mode;
 
-4 - Examples
+    Example:
+    `$ sentinel --directory . --patterns test --extensions .pl -v`
+
+4 - Dependencies
+----------------
+
+    Sentinel relies on the following modules:
+    - Getopt::Long (for parsing the command line)
+
+5 - Examples
 ------------
 
-In the directory examples.
+    More examples can be found in /examples directory in repository.
