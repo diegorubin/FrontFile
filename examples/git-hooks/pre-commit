@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+#file: abort_commit.pl
+
+use Cwd;
+
+my($directory)= getcwd;
+$directory =~ s/\.git.*//;
+
+my($patterns) = "debugger:::ruby-debug";
+my($extensions) = "'.haml|.rb|.rake|.erb'";
+
+my(@result) = `sentinel --patterns $patterns --directory $directory --extensions $extensions --exclude .git`;
+if ($#result){
+	 print "Hey, hey, hey, debugger command found\n";
+	 foreach $line (@result){
+          print $line;
+     }
+     print "\n";
+
+	 exit 1;
+}
+else{
+	 exit 0;
+}

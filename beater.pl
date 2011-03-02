@@ -4,6 +4,13 @@
 use Getopt::Long;
 use Term::ANSIColor;
 
+$result = GetOptions("file=s" => \$file,
+                     "patterns=s" => \$patterns,
+                     "c" => \$color);
+&read_file($file,$patterns);
+
+exit;
+
 sub read_file{
      local($_file) = $_[0];
      local(@_patterns) = split(/:::/,$_[1]);
@@ -45,9 +52,4 @@ sub read_file{
      }
 }
 
-
-$result = GetOptions("file=s" => \$file,
-                     "patterns=s" => \$patterns,
-                     "c" => \$color);
-read_file($file,$patterns);
 
