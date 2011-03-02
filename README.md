@@ -11,33 +11,33 @@ Currently there are two scripts:
 
 2 - Beater
 ----------
-    Options:
-    - file: name of target file;
-    - patterns: pattern searched in file;
-    - c: enable color in result;
-    
-    Example:
-    `$ beater --file README.md --patterns sentinel`
+Options:
+- file: name of target file;
+- patterns: pattern searched in file;
+- c: enable color in result;
+
+Example:
+`$ beater --file README.md --patterns sentinel`
 
 3 - Sentinel
 ------------
-    Options:
-    - directory: name of target directory;
-    - patterns: pattern searched in files;
-    - extensions: pattern in name of files;
-    - exclude: don't open files with this pattern;
-    - v: enable verbose mode;
+Options:
+- directory: name of target directory;
+- patterns: pattern searched in files;
+- extensions: pattern in name of files;
+- exclude: don't open files with this pattern;
+- v: enable verbose mode;
 
-    Example:
-    `$ sentinel --directory . --patterns test --extensions .pl -v`
+Example:
+`$ sentinel --directory . --patterns test --extensions .pl -v`
 
 4 - Dependencies
 ----------------
 
-    Sentinel relies on the following modules:
-    - Getopt::Long (for parsing the command line)
+Sentinel relies on the following modules:
+- Getopt::Long (for parsing the command line)
 
 5 - Examples
 ------------
 
-    More examples can be found in /examples directory in repository.
+More examples can be found in /examples directory in repository.
