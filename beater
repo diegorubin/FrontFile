@@ -61,12 +61,16 @@ sub read_file{
                     }
                     print "$number: ";
                     if($color){
-                         my(@parts) = split(/$pattern/,$line);
-                         my($last_position) = $#parts;
+                    	 $line =~ s/($pattern)/-ceh-\1-ceh-/g;
+                         my(@parts) = split(/-ceh-/,$line);
                          my($position) = 0;
                          foreach $exp (@parts){
-                         	  print colored($exp,'white');
-                         	  print colored($pattern,'red') unless $last_position == $position;
+                         	  if($position%2){
+                         	       print colored($exp,'red');
+                              }
+                              else{
+                              	   print colored($exp,'white');
+                              }
                          	  $position++;
                          }
                          print "\n";
