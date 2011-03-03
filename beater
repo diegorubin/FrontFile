@@ -27,9 +27,15 @@ use Term::ANSIColor;
 
 $result = GetOptions("file=s" => \$file,
                      "patterns=s" => \$patterns,
+                     "help" => \$help,
                      "c" => \$color);
-&read_file($file,$patterns);
 
+if(!$patterns || !$file || $help){
+	 &help;
+	 exit 1;
+}
+
+&read_file($file,$patterns);
 exit;
 
 sub read_file{
@@ -73,4 +79,6 @@ sub read_file{
      }
 }
 
-
+sub help{
+	 print "Usage: beater --patterns pattern --file file [-c]\n";
+}

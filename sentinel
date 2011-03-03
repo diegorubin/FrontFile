@@ -28,7 +28,14 @@ $result = GetOptions("directory=s" => \$directory,
                      "extensions=s" => \$extensions,
                      "exclude=s" => \$exclude,
                      "v" => \$verbose,
+                     "help" => \$help,
                      "c" => \$color);
+
+if(!$directory || !$patterns || $help){
+     &help;
+     exit 1;
+}
+
 my(@files) = ();
 &read_directory($directory);
 
@@ -39,7 +46,12 @@ foreach $file (@files){
      	  $number_actual++;
           print "$number_actual/$number_files\r";
      }
-     print `beater --file=$file --patterns=$patterns -c`;
+     if($color){
+          print `beater --file=$file --patterns=$patterns -c`;
+     }
+     else{
+          print `beater --file=$file --patterns=$patterns`;
+     }
 }
 
 exit;
@@ -65,5 +77,7 @@ sub read_directory {
      chdir("..");
 }
 
-
+sub help{
+	 print "Usage: sentinel --directory dir --patterns pattern [--exclude pattern] [ --extensions pattern] [-v][-c]\n";
+}
 

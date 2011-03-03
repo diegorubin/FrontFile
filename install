@@ -6,3 +6,8 @@ install -t /usr/bin sentinel -v;
 
 echo "installing beater";
 install -t /usr/bin beater -v;
+
+echo "installing man pages";
+install -t /usr/share/man/man1 man/beater.1.gz -v;
+install -t /usr/share/man/man1 man/sentinel.1.gz -v;
+#makewhatis;
