@@ -27,7 +27,6 @@ use Digest::SHA1  qw(sha1_hex);
 use File::HomeDir qw(home);
 use File::stat;
 use Getopt::Long;
-use Time::localtime;
 
 $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
