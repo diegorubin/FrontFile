@@ -36,6 +36,8 @@ Example:
 
 Sentinel relies on the following modules:
 - Getopt::Long (for parsing the command line)
+- Digest::SHA1
+- File::HomeDir 
 
 5 - Examples
 ------------
