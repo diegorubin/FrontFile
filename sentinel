@@ -47,12 +47,12 @@ my($beater_params) = "";
 $beater_params = $beater_params." -c" if($color);
 
 my(@files) = ();
+my(@matched_files) = ();
 
 if($recover){
-     my(@matched_files) = ();
      my($recover_file) = &init_recover(abs_path($directory).$patterns.$exclude.$extensions);
      my($date) = 0;
-     @files = @matched_files;
+     foreach $mf (@matched_files) {push(@files,$mf);}
      @matched_files = ();
 }
 
@@ -107,6 +107,7 @@ sub init_recover{
 	 if(-e $conf_dir){
 	 	  open(FILE,"$conf_dir");
 	 	  while(<FILE>){
+	 	  	   chomp($_);
 	 	  	   unless($date){
 	 	  	   		$date = $_;
                }
