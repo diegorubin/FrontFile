@@ -70,11 +70,19 @@ void button_search_clicked(GtkWidget *widget, gpointer data)
     gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),FALSE);
     pthread_t sentinel;
     pthread_create(&sentinel,NULL,call_sentinel,NULL);
-
+    
 }
 
 void *call_sentinel()
 {
     char **arguments;
-    execv("/bin/ls",arguments);
+    int pid;
+
+    pid = fork();
+    if(pid){
+        gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
+    }
+    else{
+        execv("/usr/bin/sentinel",arguments);
+    }
 }
