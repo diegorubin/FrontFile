@@ -2,10 +2,14 @@
 #!/bin/bash
 
 echo "installing sentinel";
+cp sentinel.pl sentinel
 install -t /usr/bin sentinel -v;
+rm sentinel
 
 echo "installing beater";
+cp beater.pl beater
 install -t /usr/bin beater -v;
+rm beater
 
 echo "installing man pages";
 install -t /usr/share/man/man1 man/beater.1.gz -v;
