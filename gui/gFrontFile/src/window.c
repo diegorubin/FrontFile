@@ -16,11 +16,17 @@ GtkWidget *create_main_window()
                         FALSE,
                         0); 
 
-    entPatterns = gtk_entry_new();
-    btnSearch = gtk_button_new_with_label("Pesquisar");
+    lblDirectory = gtk_label_new("Directory:");
+    btnChooseDirectory = gtk_file_chooser_button_new ("Select a directory",
+                                                      GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER); 
 
-    gtk_table_attach(GTK_TABLE(tblMenu), entPatterns, 0, 1, 0, 1, GTK_SHRINK,GTK_SHRINK,0,0);  
-    gtk_table_attach(GTK_TABLE(tblMenu), btnSearch, 1, 2, 0, 1, GTK_SHRINK,GTK_SHRINK,0,0);  
+    entPatterns = gtk_entry_new();
+    btnSearch = gtk_button_new_with_label("Search");
+
+    gtk_table_attach(GTK_TABLE(tblMenu), lblDirectory, 0, 1, 0, 1, GTK_EXPAND,GTK_SHRINK,0,0);  
+    gtk_table_attach(GTK_TABLE(tblMenu), btnChooseDirectory, 1, 2, 0, 1, GTK_SHRINK,GTK_SHRINK,0,0);  
+    gtk_table_attach(GTK_TABLE(tblMenu), entPatterns, 0, 1, 1, 2, GTK_EXPAND,GTK_SHRINK,0,0);  
+    gtk_table_attach(GTK_TABLE(tblMenu), btnSearch, 1, 2, 1, 2, GTK_EXPAND,GTK_SHRINK,0,0);  
 
 
     scwResult = gtk_scrolled_window_new (NULL, 
@@ -30,16 +36,13 @@ GtkWidget *create_main_window()
                                   GTK_POLICY_AUTOMATIC); 
 
     scvResult = gtk_source_view_new(); 
-    gtk_source_view_set_show_line_numbers (GTK_SOURCE_VIEW (scvResult), TRUE); 
-
+    gtk_text_view_set_editable(GTK_TEXT_VIEW(scvResult), FALSE);
     gtk_container_add (GTK_CONTAINER (scwResult), scvResult); 
-
     gtk_box_pack_start (GTK_BOX (vbxWindow), 
                       scwResult, 
-                      TRUE, // vbox gives widget all remaining space 
-                      TRUE, // widget expands to fill given space 
-                      0); // pixel of padding around the widget 
-
+                      TRUE, 
+                      TRUE,
+                      0); 
 
     gtk_container_add(GTK_CONTAINER(window), vbxWindow);
 
@@ -47,6 +50,10 @@ GtkWidget *create_main_window()
     g_signal_connect(G_OBJECT(window),
                      "delete_event",
                      G_CALLBACK(program_quit),
+                     NULL);
+    g_signal_connect(G_OBJECT(btnSearch),
+                     "clicked",
+                     G_CALLBACK(button_search_clicked),
                      NULL);
     
     return window;
@@ -56,4 +63,18 @@ gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     gtk_main_quit();
     return TRUE;
+}
+
+void button_search_clicked(GtkWidget *widget, gpointer data)
+{
+    gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),FALSE);
+    pthread_t sentinel;
+    pthread_create(&sentinel,NULL,call_sentinel,NULL);
+
+}
+
+void *call_sentinel()
+{
+    char **arguments;
+    execv("/bin/ls",arguments);
 }
