@@ -141,6 +141,6 @@ sub call_beater{
 }
 
 sub help{
-	 print "Usage: sentinel --directory dir --patterns pattern [--exclude pattern] [ --extensions pattern] [-v][-c]\n";
+	 print "Usage: sentinel --directory dir --patterns pattern [--exclude pattern] [ --extensions pattern] [-v][-c][-r]\n";
 }
 

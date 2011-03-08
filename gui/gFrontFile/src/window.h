@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
+#include <string.h>
 
 GtkWidget *window;
 GtkWidget *create_main_window();
@@ -11,13 +12,19 @@ GtkWidget *create_main_window();
 /* Window's widgets */
 /* labels */
 GtkWidget *lblDirectory;
+GtkWidget *lblPatterns;
+GtkWidget *lblExtensions;
+GtkWidget *lblExclude;
 
 /* entries */
 GtkWidget *entPatterns;
+GtkWidget *entExtensions;
+GtkWidget *entExclude;
 
 /* buttons */
 GtkWidget *btnSearch;
 GtkWidget *btnChooseDirectory;
+GtkWidget *ckbRecover;
 
 /* others */
 GtkWidget *scwResult;
