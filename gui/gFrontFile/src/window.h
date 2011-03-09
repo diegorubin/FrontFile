@@ -5,6 +5,8 @@
 #include <gtk/gtk.h>
 #include <gtksourceview/gtksourceview.h>
 #include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 GtkWidget *window;
 GtkWidget *create_main_window();

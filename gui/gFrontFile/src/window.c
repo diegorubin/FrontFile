@@ -89,8 +89,10 @@ void button_search_clicked(GtkWidget *widget, gpointer data)
 
 void *call_sentinel()
 {
-    char *arguments[11];
+    char *arguments[10];
     int pid; 
+    int file_output;
+
     pid = fork();
     if(!pid){
         arguments[0] = strdup("/usr/bin/sentinel");
@@ -124,10 +126,37 @@ void *call_sentinel()
         }else{
             arguments[9] = "";
         }
-        arguments[10] = strdup("-c");
+        
+        file_output = open("/tmp/gfrontfile", O_WRONLY | O_CREAT, 0666);
+        close(1);
+        dup2(file_output,1);
+        close(file_output);
         execv("/usr/bin/sentinel",arguments);
+        close(1);
     }else{
         wait(0);
+
+        FILE *file = fopen ("/tmp/gfrontfile", "r");                                      
+        fseek (file, 0, SEEK_END);                                               
+        long bytes = ftell (file);                                               
+        rewind (file);               
+        char *text = malloc (sizeof (char) * bytes);                             
+        fread (text,                                                             
+               sizeof (char),                                     
+               bytes,                                     
+               file);                                                            
+        fclose (file);
+        
+        if (text[bytes - 1] == '\n') {                                               
+            --bytes; 
+        }     
+
+        GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
+        gtk_text_buffer_set_text(buffer,text,bytes);
+        gtk_text_view_set_buffer(GTK_TEXT_VIEW(scvResult),buffer);
+
+        g_object_unref(buffer);
+
         gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
     }
 }
