@@ -1,5 +1,7 @@
 #include "window.h"
 
+char *fifo = "/tmp/gfrontfile";
+
 GtkWidget *create_main_window()
 {
     window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -127,7 +129,19 @@ void *call_sentinel()
             arguments[9] = "";
         }
         
-        file_output = open("/tmp/gfrontfile", O_WRONLY | O_CREAT, 0666);
+        /* creating socket */
+        if(access(fifo,F_OK) == -1){
+            if(mkfifo(fifo,0666) != 0){
+                g_print("error creating pipeline\n");
+                gtk_main_quit();
+            }
+        }
+
+                
+        file_output = open(fifo, O_WRONLY, 0666);
+        
+        pipeline = g_io_channel_unix_new(file_output);
+        
         close(1);
         dup2(file_output,1);
         close(file_output);
@@ -135,28 +149,21 @@ void *call_sentinel()
         close(1);
     }else{
         wait(0);
-
-        FILE *file = fopen ("/tmp/gfrontfile", "r");                                      
-        fseek (file, 0, SEEK_END);                                               
-        long bytes = ftell (file);                                               
-        rewind (file);               
-        char *text = malloc (sizeof (char) * bytes);                             
-        fread (text,                                                             
-               sizeof (char),                                     
-               bytes,                                     
-               file);                                                            
-        fclose (file);
         
-        if (text[bytes - 1] == '\n') {                                               
-            --bytes; 
-        }     
 
+        /* still can util
         GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
         gtk_text_buffer_set_text(buffer,text,bytes);
         gtk_text_view_set_buffer(GTK_TEXT_VIEW(scvResult),buffer);
 
         g_object_unref(buffer);
+        */
 
         gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
     }
 }
+
+gint get_result(gint io_condition)
+{
+}
+
