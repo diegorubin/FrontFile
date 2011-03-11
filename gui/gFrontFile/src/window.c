@@ -62,6 +62,8 @@ GtkWidget *create_main_window()
 
     gtk_container_add(GTK_CONTAINER(window), vbxWindow);
 
+    /* crate pipeline */
+
     /* signals connect */
     g_signal_connect(G_OBJECT(window),
                      "delete_event",
@@ -141,6 +143,8 @@ void *call_sentinel()
         file_output = open(fifo, O_WRONLY, 0666);
         
         pipeline = g_io_channel_unix_new(file_output);
+
+        g_signal_connect(pipeline, "incoming", G_CALLBACK(get_result), NULL);
         
         close(1);
         dup2(file_output,1);
@@ -151,19 +155,26 @@ void *call_sentinel()
         wait(0);
         
 
-        /* still can util
-        GtkTextBuffer *buffer = gtk_text_buffer_new(NULL);
-        gtk_text_buffer_set_text(buffer,text,bytes);
-        gtk_text_view_set_buffer(GTK_TEXT_VIEW(scvResult),buffer);
-
-        g_object_unref(buffer);
-        */
-
         gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
     }
 }
 
-gint get_result(gint io_condition)
+gboolean get_result(GIOChannel *source, GIOCondition cond, gpointer data)
 {
+
+    GString *s = g_string_new(NULL);
+    GError *error;
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(scvResult)); 
+
+    GIOStatus ret = g_io_channel_read_line_string(source, s, NULL, &error);
+    if (ret == G_IO_STATUS_ERROR)
+        g_error ("Error reading: %s\n", error->message);
+    else
+        gtk_text_buffer_insert_at_cursor(buffer,s->str,s->len);
+
+
+    g_object_unref(buffer);
+
+
 }
 

@@ -39,7 +39,7 @@ GtkWidget *scvResult;
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);
 void button_search_clicked(GtkWidget *widget, gpointer data);
-gint get_result(gint io_condition);
+gboolean get_result(GIOChannel *source, GIOCondition cond, gpointer data);
 
 /* Methods */
 void *call_sentinel();
