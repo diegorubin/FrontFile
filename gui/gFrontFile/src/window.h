@@ -17,6 +17,10 @@ GtkWidget *create_main_window();
 GIOChannel *pipeline;
 int file_output;
 
+/* threads */
+pthread_t t_sentinel;
+pthread_t t_result;
+
 /* Window's widgets */
 /* labels */
 GtkWidget *lblDirectory;
@@ -37,6 +41,7 @@ GtkWidget *ckbRecover;
 /* others */
 GtkWidget *scwResult;
 GtkWidget *scvResult;
+GtkTextBuffer *buffer;
 
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);

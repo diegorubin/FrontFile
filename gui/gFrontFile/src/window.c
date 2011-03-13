@@ -1,6 +1,6 @@
 #include "window.h"
 
-const char *result = "/gfrontfile";
+const char *fifo = "/tmp/gfrontfile";
 
 GtkWidget *create_main_window()
 {
@@ -59,8 +59,18 @@ GtkWidget *create_main_window()
                       TRUE, 
                       TRUE,
                       0); 
+    
+    buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(scvResult)); 
 
     gtk_container_add(GTK_CONTAINER(window), vbxWindow);
+   
+    if(access(fifo,F_OK) == -1){
+        if(mkfifo(fifo,0666) != 0){
+            g_print("error creating pipeline\n");
+            gtk_main_quit();
+        }
+    }
+
 
     /* signals connect */
     g_signal_connect(G_OBJECT(window),
@@ -83,14 +93,11 @@ gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 void button_search_clicked(GtkWidget *widget, gpointer data)
 {
-    pthread_t t_sentinel;
-    pthread_t t_result;
-    
     gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),FALSE);
-    
+    gtk_text_buffer_set_text(buffer,"\0",-1);
+
     pthread_create(&t_sentinel,NULL,call_sentinel,NULL);
     pthread_create(&t_result,NULL,get_result,NULL);
-    
 }
 
 void *call_sentinel()
@@ -132,7 +139,7 @@ void *call_sentinel()
             arguments[9] = "";
         }
         
-        file_output = shm_open(result,O_WRONLY | O_CREAT,0600);
+        file_output = open(fifo,O_WRONLY,0600);
         close(1);
         dup2(file_output,1);
         close(file_output);
@@ -140,6 +147,8 @@ void *call_sentinel()
         close(1);
     }else{
         wait(0);
+        sleep(1);
+        pthread_cancel(t_result);
         gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
     }
 }
@@ -147,17 +156,23 @@ void *call_sentinel()
 void *get_result()
 {
 
-    int shmdes = shm_open(result, O_RDONLY, 0600);
-    char *m_result;
+    char m_result[PIPE_BUF+1];
+    gchar *g_result;
+    int file_input;
 
-    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(scvResult)); 
 
-    while(!gtk_widget_get_sensitive(btnSearch)){
-        sleep(2);
-        read(shmdes,m_result,sizeof(char)*10);
-        gtk_text_buffer_insert_at_cursor(buffer,m_result,sizeof(char)*10);
-        g_print(m_result);
+    for(;;){
+        file_input = open(fifo, O_RDONLY, 0600);
+        read(file_input,m_result,PIPE_BUF);
+        m_result[PIPE_BUF+1] = '\0';
+        
+        g_result = g_strdup(g_locale_to_utf8(m_result,-1,0,0,0));
+        
+        gtk_text_buffer_insert_at_cursor(buffer,g_result,-1);
+        close(file_input);
     }
-    g_object_unref(buffer);
+
+    free(m_result);
+    free(g_result);
 }
 
