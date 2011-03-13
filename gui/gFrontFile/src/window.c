@@ -88,6 +88,7 @@ GtkWidget *create_main_window()
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
 {
     gtk_main_quit();
+    unlink(fifo);
     return TRUE;
 }
 
