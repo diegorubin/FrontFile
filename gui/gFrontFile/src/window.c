@@ -1,6 +1,6 @@
 #include "window.h"
 
-char *fifo = "/tmp/gfrontfile";
+const char *result = "/gfrontfile";
 
 GtkWidget *create_main_window()
 {
@@ -62,8 +62,6 @@ GtkWidget *create_main_window()
 
     gtk_container_add(GTK_CONTAINER(window), vbxWindow);
 
-    /* crate pipeline */
-
     /* signals connect */
     g_signal_connect(G_OBJECT(window),
                      "delete_event",
@@ -85,9 +83,13 @@ gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data)
 
 void button_search_clicked(GtkWidget *widget, gpointer data)
 {
+    pthread_t t_sentinel;
+    pthread_t t_result;
+    
     gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),FALSE);
-    pthread_t sentinel;
-    pthread_create(&sentinel,NULL,call_sentinel,NULL);
+    
+    pthread_create(&t_sentinel,NULL,call_sentinel,NULL);
+    pthread_create(&t_result,NULL,get_result,NULL);
     
 }
 
@@ -95,7 +97,6 @@ void *call_sentinel()
 {
     char *arguments[10];
     int pid; 
-    int file_output;
 
     pid = fork();
     if(!pid){
@@ -131,21 +132,7 @@ void *call_sentinel()
             arguments[9] = "";
         }
         
-        /* creating socket */
-        if(access(fifo,F_OK) == -1){
-            if(mkfifo(fifo,0666) != 0){
-                g_print("error creating pipeline\n");
-                gtk_main_quit();
-            }
-        }
-
-                
-        file_output = open(fifo, O_WRONLY, 0666);
-        
-        pipeline = g_io_channel_unix_new(file_output);
-
-        g_signal_connect(pipeline, "incoming", G_CALLBACK(get_result), NULL);
-        
+        file_output = shm_open(result,O_WRONLY | O_CREAT,0600);
         close(1);
         dup2(file_output,1);
         close(file_output);
@@ -153,28 +140,24 @@ void *call_sentinel()
         close(1);
     }else{
         wait(0);
-        
-
         gtk_widget_set_sensitive(GTK_WIDGET(btnSearch),TRUE);
     }
 }
 
-gboolean get_result(GIOChannel *source, GIOCondition cond, gpointer data)
+void *get_result()
 {
 
-    GString *s = g_string_new(NULL);
-    GError *error;
+    int shmdes = shm_open(result, O_RDONLY, 0600);
+    char *m_result;
+
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(scvResult)); 
 
-    GIOStatus ret = g_io_channel_read_line_string(source, s, NULL, &error);
-    if (ret == G_IO_STATUS_ERROR)
-        g_error ("Error reading: %s\n", error->message);
-    else
-        gtk_text_buffer_insert_at_cursor(buffer,s->str,s->len);
-
-
+    while(!gtk_widget_get_sensitive(btnSearch)){
+        sleep(2);
+        read(shmdes,m_result,sizeof(char)*10);
+        gtk_text_buffer_insert_at_cursor(buffer,m_result,sizeof(char)*10);
+        g_print(m_result);
+    }
     g_object_unref(buffer);
-
-
 }
 

@@ -9,11 +9,13 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include <sys/mman.h>
 
 GtkWidget *window;
 GtkWidget *create_main_window();
 
 GIOChannel *pipeline;
+int file_output;
 
 /* Window's widgets */
 /* labels */
@@ -39,9 +41,9 @@ GtkWidget *scvResult;
 /* Callbacks */
 gboolean program_quit(GtkWidget *widget, GdkEvent *event, gpointer data);
 void button_search_clicked(GtkWidget *widget, gpointer data);
-gboolean get_result(GIOChannel *source, GIOCondition cond, gpointer data);
 
 /* Methods */
 void *call_sentinel();
+void *get_result();
 
 #endif /*_WINDOW_H_*/
