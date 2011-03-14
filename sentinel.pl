@@ -32,6 +32,7 @@ $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
                      "extensions=s" => \$extensions,
                      "exclude=s" => \$exclude,
+                     "x=s" => \$exclude,
                      "help" => \$help,
                      "recover" => \$recover,
                      "v" => \$verbose,
@@ -141,6 +142,6 @@ sub call_beater{
 }
 
 sub help{
-	 print "Usage: sentinel --directory dir --patterns pattern [--exclude pattern] [ --extensions pattern] [-v][-c][-r]\n";
+	 print "Usage: sentinel --directory dir --patterns pattern [--exclude|-x pattern] [ --extensions pattern] [-v][-c][-r]\n";
 }
 
