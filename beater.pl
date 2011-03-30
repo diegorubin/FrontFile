@@ -24,6 +24,7 @@
 
 use Getopt::Long;
 use Term::ANSIColor;
+use FrontFile;
 
 GetOptions("file=s" => \$file,
      "patterns=s" => \$patterns,
@@ -37,51 +38,6 @@ if(!$patterns || !$file || $help){
 
 &read_file($file,$patterns);
 exit;
-
-sub read_file{
-     local($_file) = $_[0];
-     local(@_patterns) = split(/:::/,$_[1]);
-     open(TARGET,"<$_file");
-
-     my($print_name) = 1;
-     my($number) = 0;
-     while(<TARGET>){
-     	  $number++;
-          my($line) = $_;
-          chomp($line);
-          foreach $pattern (@_patterns){
-          	   if($line =~ m/$pattern/){
-          	   		if($print_name){
-          	   			 if($color){
-          	   			      print colored("in file $_file\n",'green');
-                         }else{
-          	   			      print "in file $_file\n";
-                         }
-                         $print_name = 0;
-                    }
-                    print "$number: ";
-                    if($color){
-                    	 $line =~ s/($pattern)/-ceh-$1-ceh-/g;
-                         my(@parts) = split(/-ceh-/,$line);
-                         my($position) = 0;
-                         foreach $exp (@parts){
-                         	  if($position%2){
-                         	       print colored($exp,'red');
-                              }
-                              else{
-                              	   print colored($exp,'white');
-                              }
-                         	  $position++;
-                         }
-                         print "\n";
-                    }
-                    else{
-                    	 print $line."\n";
-                    }
-               }
-          }
-     }
-}
 
 sub help{
 	 print "Usage: beater --patterns pattern --file file [-c]\n";
