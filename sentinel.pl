@@ -50,7 +50,7 @@ my(@files) = ();
 my(@matched_files) = ();
 
 if($recover){
-     my($recover_file) = &init_recover(abs_path($directory).$patterns.$exclude.$extensions);
+     our($recover_file) = &init_recover(abs_path($directory).$patterns.$exclude.$extensions);
      my($date) = 0;
      foreach $mf (@matched_files) {push(@files,$mf);}
      @matched_files = ();
@@ -70,7 +70,7 @@ foreach $file (@files){
 }
 
 if($recover){
-	 &end_recover($recover_file);
+     &end_recover($recover_file);
 }
 
 exit;

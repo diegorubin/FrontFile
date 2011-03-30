@@ -25,10 +25,10 @@
 use Getopt::Long;
 use Term::ANSIColor;
 
-$result = GetOptions("file=s" => \$file,
-                     "patterns=s" => \$patterns,
-                     "help" => \$help,
-                     "c" => \$color);
+GetOptions("file=s" => \$file,
+     "patterns=s" => \$patterns,
+     "help" => \$help,
+     "c" => \$color);
 
 if(!$patterns || !$file || $help){
 	 &help;
@@ -61,7 +61,7 @@ sub read_file{
                     }
                     print "$number: ";
                     if($color){
-                    	 $line =~ s/($pattern)/-ceh-\1-ceh-/g;
+                    	 $line =~ s/($pattern)/-ceh-$1-ceh-/g;
                          my(@parts) = split(/-ceh-/,$line);
                          my($position) = 0;
                          foreach $exp (@parts){
