@@ -4,6 +4,9 @@ use 5.010001;
 use strict;
 use warnings;
 
+use Term::ANSIColor;
+
+
 require Exporter;
 
 our @ISA = qw(Exporter);
@@ -22,6 +25,7 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
+    read_file
 	
 );
 
@@ -34,13 +38,13 @@ sub read_file{
      my($_file) = $_[0];
      my(@_patterns) = split(/:::/,$_[1]);
      my($color) = $_[2];
-     open(TARGET,"<$_file");
+     open(my $target,'<',$_file);
 
      my($print_name) = 1;
      my($number) = 0;
-     while(<TARGET>){
+     while(my $line = <$target>){
+
      	  $number++;
-          my($line) = $_;
           chomp($line);
           my($pattern);
           foreach $pattern (@_patterns){
@@ -58,8 +62,7 @@ sub read_file{
                     	 $line =~ s/($pattern)/-ceh-$1-ceh-/g;
                          my(@parts) = split(/-ceh-/,$line);
                          my($position) = 0;
-                         my($exp);
-                         foreach $exp (@parts){
+                         foreach my $exp (@parts){
                          	  if($position%2){
                          	       print colored($exp,'red');
                               }

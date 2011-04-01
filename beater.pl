@@ -23,8 +23,7 @@
 
 
 use Getopt::Long;
-use Term::ANSIColor;
-use FrontFile;
+use FrontFile qw(read_file);
 
 GetOptions("file=s" => \$file,
      "patterns=s" => \$patterns,
@@ -36,7 +35,7 @@ if(!$patterns || !$file || $help){
 	 exit 1;
 }
 
-&read_file($file,$patterns);
+read_file($file,$patterns,1);
 exit;
 
 sub help{
