@@ -3,10 +3,13 @@
 
 #########################
 
-# change 'tests => 1' to 'tests => last_test_to_print';
+use Test::More tests => 2;
+BEGIN { use_ok('FrontFile')};
 
-use Test::More tests => 1;
-BEGIN { use_ok('FrontFile') };
+is(read_file("README","Diego Rubin",0),"in file README\n34: Copyright (C) 2011 by Diego Rubin\n", "read copyright from README");
+
+
+
 
 #########################
 

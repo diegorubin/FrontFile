@@ -35,7 +35,7 @@ if(!$patterns || !$file || $help){
 	 exit 1;
 }
 
-read_file($file,$patterns,$color);
+print read_file($file,$patterns,$color);
 exit;
 
 sub help{

@@ -38,6 +38,9 @@ sub read_file{
      my($_file) = $_[0];
      my(@_patterns) = split(/:::/,$_[1]);
      my($color) = $_[2];
+
+     my($result);
+
      open(my $target,'<',$_file);
 
      my($print_name) = 1;
@@ -51,34 +54,35 @@ sub read_file{
           	   if($line =~ m/$pattern/){
           	   		if($print_name){
           	   			 if($color){
-          	   			      print colored("in file $_file\n",'green');
+          	   			      $result = colored("in file $_file\n",'green');
                          }else{
-          	   			      print "in file $_file\n";
+          	   			      $result = "in file $_file\n";
                          }
                          $print_name = 0;
                     }
-                    print "$number: ";
+                    $result = $result."$number: ";
                     if($color){
                     	 $line =~ s/($pattern)/-ceh-$1-ceh-/g;
                          my(@parts) = split(/-ceh-/,$line);
                          my($position) = 0;
                          foreach my $exp (@parts){
                          	  if($position%2){
-                         	       print colored($exp,'red');
+                         	       $result = $result.colored($exp,'red');
                               }
                               else{
-                              	   print colored($exp,'white');
+                              	   $result = $result.colored($exp,'white');
                               }
                          	  $position++;
                          }
-                         print "\n";
+                         $result = $result."\n";
                     }
                     else{
-                    	 print $line."\n";
+                    	 $result = $result.$line."\n";
                     }
                }
           }
      }
+     $result;
 }
 
 1;
