@@ -9,3 +9,7 @@ Makefile
 
 *.o
 *.swp
+
+# perl module
+blib
+pm_to_blib
