@@ -76,37 +76,6 @@ if($recover){
 exit;
 
 # functions
-sub init_recover{
-	 local($hashed_directory) = sha1_hex(@_);
-	 local($home_directory) = home()."/.frontfile";
-	 mkdir $home_directory unless(-e $home_directory);
-	 
-	 local($conf_dir) = $home_directory."/$hashed_directory";
-	 if(-e $conf_dir){
-	 	  open(FILE,"$conf_dir");
-	 	  while(<FILE>){
-	 	  	   chomp($_);
-	 	  	   unless($date){
-	 	  	   		$date = $_;
-               }
-               else{
-               		push(@matched_files,$_);
-               }
-          }
-	 	  close(FILE);
-     }
-     open($file, ">$conf_dir");
-
-     print $file time();
-     print $file "\n";
-
-     return $file;
-}
-
-sub end_recover{
-     foreach $tf (@matched_files){ print $file "$tf\n"; }
-	 close($file);
-}
 
 sub call_beater{
 	 local($target_file) = @_;
