@@ -21,12 +21,12 @@
 # 	Boston, MA  02110-1301, USA.
 #
 
-use Cwd;
-use Cwd 'abs_path';
+#use Cwd;
+#use Cwd 'abs_path';
 use Digest::SHA1  qw(sha1_hex);
 use File::HomeDir qw(home);
-use File::stat;
 use Getopt::Long;
+use FrontFile;
 
 $result = GetOptions("directory=s" => \$directory,
                      "patterns=s" => \$patterns,
@@ -56,7 +56,7 @@ if($recover){
      @matched_files = ();
 }
 
-&read_directory($directory);
+read_directory($directory);
 
 my($number_files) = $#files+1;
 my($number_actual) = 0;
@@ -76,28 +76,6 @@ if($recover){
 exit;
 
 # functions
-sub read_directory {
-     local($directory) = @_;
-     chdir($directory) || die "Cannot chdir to $directory\n";
-     local($pwd) = getcwd;
-     local(*DIR);
-     opendir(DIR, ".");
-     while ($f=readdir(DIR)) {
-          next if ($f eq "." || $f eq "..");
-          next if ($extensions && (-f $f) && ($f !~ m/$extensions/));
-          next if ($exclude && ($f =~ m/$exclude/));
-          if (-d $f) {
-               &read_directory($f);
-          }
-          else{
-          	   $update = stat("$pwd/$f")->mtime;
-               push(@files,"$pwd/$f") if($update > $date);
-          }
-     }
-     closedir(DIR);
-     chdir("..");
-}
-
 sub init_recover{
 	 local($hashed_directory) = sha1_hex(@_);
 	 local($home_directory) = home()."/.frontfile";

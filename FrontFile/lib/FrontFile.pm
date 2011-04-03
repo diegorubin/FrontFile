@@ -5,6 +5,8 @@ use strict;
 use warnings;
 
 use Term::ANSIColor;
+use Cwd;
+use File::stat;
 
 
 require Exporter;
@@ -25,11 +27,18 @@ our %EXPORT_TAGS = ( 'all' => [ qw(
 our @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
 our @EXPORT = qw(
-    read_file
-	
+     read_file
+     read_directory
 );
 
 our $VERSION = '1.1';
+
+# Global Options
+my($exclude);
+my($extensions);
+my($date);
+my($update);
+my(@files);
 
 
 # This method find a pattern in file
@@ -41,7 +50,7 @@ sub read_file{
 
      my($result);
 
-     open(my $target,'<',$_file);
+     open(my $target,'<',$_file) || die "Cannot open $_file\n";
 
      my($print_name) = 1;
      my($number) = 0;
@@ -84,6 +93,31 @@ sub read_file{
      }
      $result;
 }
+
+# This method find pattern file name in directory
+# Args: directory
+sub read_directory {
+     my($directory) = $_[0];
+     chdir($directory) || die "Cannot chdir to $directory\n";
+     my($pwd) = getcwd;
+     local(*DIR);
+     opendir(DIR, ".");
+     while (my($f)= readdir(DIR)) {
+          next if ($f eq "." || $f eq "..");
+          next if ($extensions && (-f $f) && ($f !~ m/$extensions/));
+          next if ($exclude && ($f =~ m/$exclude/));
+          if (-d $f) {
+               &read_directory($f);
+          }
+          else{
+               $update = stat("$pwd/$f")->mtime;
+               push(@files,"$pwd/$f") if($update > $date);
+          }
+     }
+     closedir(DIR);
+     chdir("..");
+}
+
 
 1;
 __END__
