@@ -3,12 +3,13 @@
 
 #########################
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 BEGIN { use_ok('FrontFile')};
 
 is(read_file("README","Diego Rubin",0),"in file README\n34: Copyright (C) 2011 by Diego Rubin\n", "read copyright from README");
 
 
+is(read_directory("."),"in file README\n34: Copyright (C) 2011 by Diego Rubin\n", "read copyright from directory");
 
 
 #########################

@@ -23,20 +23,18 @@
 
 #use Cwd;
 #use Cwd 'abs_path';
-use Digest::SHA1  qw(sha1_hex);
-use File::HomeDir qw(home);
 use Getopt::Long;
 use FrontFile;
 
-$result = GetOptions("directory=s" => \$directory,
-                     "patterns=s" => \$patterns,
-                     "extensions=s" => \$extensions,
-                     "exclude=s" => \$exclude,
-                     "x=s" => \$exclude,
-                     "help" => \$help,
-                     "recover" => \$recover,
-                     "v" => \$verbose,
-                     "c" => \$color);
+GetOptions("directory=s" => \$directory,
+           "patterns=s" => \$patterns,
+           "extensions=s" => \$extensions,
+           "exclude=s" => \$exclude,
+           "x=s" => \$exclude,
+           "help" => \$help,
+           "recover" => \$recover,
+           "v" => \$verbose,
+           "c" => \$color);
 
 if(!$directory || !$patterns || $help){
      &help;
@@ -66,7 +64,7 @@ foreach $file (@files){
      	  $number_actual++;
           print "$number_actual/$number_files\r";
      }
-     &call_beater($file);
+     call_beater($file);
 }
 
 if($recover){
@@ -77,16 +75,7 @@ exit;
 
 # functions
 
-sub call_beater{
-	 local($target_file) = @_;
-     local(@result) = `beater --file=$target_file --patterns=$patterns $beater_params`;
-     if($#result+1){
-     	  foreach $l (@result){ print $l}
-     	  if($recover){
-     	  	   push(@matched_files,$target_file);
-          }
-     }
-}
+
 
 sub help{
 	 print "Usage: sentinel --directory dir --patterns pattern [--exclude|-x pattern] [ --extensions pattern] [-v][-c][-r]\n";

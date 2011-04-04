@@ -8,6 +8,8 @@ use Term::ANSIColor;
 use Cwd;
 use File::stat;
 
+use Digest::SHA1  qw(sha1_hex);
+use File::HomeDir qw(home);
 
 require Exporter;
 
@@ -38,7 +40,13 @@ my($exclude);
 my($extensions);
 my($date) = 0;
 my($update);
+my($file);
+my($recover);
+my($color);
+my($pattern);
+
 my(@files);
+my(@matched_files);
 
 
 # This method find a pattern in file
@@ -118,12 +126,14 @@ sub read_directory {
      chdir("..");
 }
 
+# This method init configurations for recover search
+# Args: string 
 sub init_recover{
-	 local($hashed_directory) = sha1_hex(@_);
-	 local($home_directory) = home()."/.frontfile";
+	 my($hashed_directory) = sha1_hex(@_);
+	 my($home_directory) = home()."/.frontfile";
 	 mkdir $home_directory unless(-e $home_directory);
 	 
-	 local($conf_dir) = $home_directory."/$hashed_directory";
+	 my($conf_dir) = $home_directory."/$hashed_directory";
 	 if(-e $conf_dir){
 	 	  open(FILE,"$conf_dir");
 	 	  while(<FILE>){
@@ -137,7 +147,7 @@ sub init_recover{
           }
 	 	  close(FILE);
      }
-     open($file, ">$conf_dir");
+     open($file, ">", $conf_dir);
 
      print $file time();
      print $file "\n";
@@ -145,12 +155,25 @@ sub init_recover{
      return $file;
 }
 
+
+# This method close file with search configurations
 sub end_recover{
-     foreach $tf (@matched_files){ print $file "$tf\n"; }
+     foreach my $tf (@matched_files){ print $file "$tf\n"; }
 	 close($file);
 }
 
-
+# This method read a file
+# Args: target_file
+sub call_beater{
+     my($target_file) = @_;
+     my(@result) = read_file($target_file,$pattern,$color);
+     if($#result+1){
+     	  foreach my $l (@result){ print $l}
+     	  if($recover){
+     	  	   push(@matched_files,$target_file);
+          }
+     }
+}
 
 1;
 __END__
