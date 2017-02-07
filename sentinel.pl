@@ -35,6 +35,7 @@ $result = GetOptions("directory=s" => \$directory,
                      "x=s" => \$exclude,
                      "help" => \$help,
                      "recover" => \$recover,
+                     "i" => \$ignorecase,
                      "v" => \$verbose,
                      "c" => \$color);
 
@@ -45,6 +46,7 @@ if(!$directory || !$patterns || $help){
 
 my($beater_params) = "";
 $beater_params = $beater_params." -c" if($color);
+$beater_params = $beater_params." -i" if($ignorecase);
 
 my(@files) = ();
 my(@matched_files) = ();
@@ -142,6 +144,6 @@ sub call_beater{
 }
 
 sub help{
-	 print "Usage: sentinel --directory dir --patterns pattern [--exclude|-x pattern] [ --extensions pattern] [-v][-c][-r]\n";
+	 print "Usage: sentinel --directory dir --patterns pattern [--exclude|-x pattern] [ --extensions pattern] [-v][-c][-r][-i]\n";
 }
 

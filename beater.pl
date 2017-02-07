@@ -28,6 +28,7 @@ use Term::ANSIColor;
 $result = GetOptions("file=s" => \$file,
                      "patterns=s" => \$patterns,
                      "help" => \$help,
+                     "i" => \$ignore,
                      "c" => \$color);
 
 if(!$patterns || !$file || $help){
@@ -50,7 +51,8 @@ sub read_file{
           my($line) = $_;
           chomp($line);
           foreach $pattern (@_patterns){
-          	   if($line =~ m/$pattern/){
+               my($regexpattern) = ($ignore ? qr/$pattern/i : qr/$pattern/);
+          	   if($line =~ m{$regexpattern}){
           	   		if($print_name){
           	   			 if($color){
           	   			      print colored("in file $_file\n",'green');
@@ -61,7 +63,7 @@ sub read_file{
                     }
                     print "$number: ";
                     if($color){
-                    	 $line =~ s/($pattern)/-ceh-\1-ceh-/g;
+                    	 $line =~ s/($pattern)/-ceh-\1-ceh-/ig;
                          my(@parts) = split(/-ceh-/,$line);
                          my($position) = 0;
                          foreach $exp (@parts){
@@ -84,5 +86,5 @@ sub read_file{
 }
 
 sub help{
-	 print "Usage: beater --patterns pattern --file file [-c]\n";
+	 print "Usage: beater --patterns pattern --file file [-c][-i]\n";
 }
