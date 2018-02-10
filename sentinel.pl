@@ -92,8 +92,10 @@ sub read_directory {
                &read_directory($f);
           }
           else{
-          	   $update = stat("$pwd/$f")->mtime;
-               push(@files,"$pwd/$f") if($update > $date);
+               if (stat("$pwd/$f")) {
+          	        $update = stat("$pwd/$f")->mtime;
+                    push(@files,"$pwd/$f") if($update > $date);
+               }
           }
      }
      closedir(DIR);
